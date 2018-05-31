@@ -28,7 +28,7 @@ module.exports.obterPost = function(req, res){
 };
 
 module.exports.inserirPost = function(req, res){
-    let promise = Post.create();
+    let promise = Post.create(req.body);
     promise.then(
         function(post){
             res.status(201).json(post);
