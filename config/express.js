@@ -1,7 +1,7 @@
 let express = require('express');
 
-let postsRouter = require('../app/route/posts');
-let usuariosRouter = require('../app/route/usuarios');
+let postsRouter = require('../app/routes/posts');
+let usuariosRouter = require('../app/routes/usuarios');
 
 let bodyParser = require('body-parser');
 

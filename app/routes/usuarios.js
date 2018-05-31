@@ -6,4 +6,5 @@ module.exports = function(app){
     app.post('/api/usuarios', controller.inserirUsuario);
     app.put('/api/usuarios/:id', controller.updateUsuario);
     app.delete('/api/usuarios/:id', controller.deleteUsuario);
+    app.get('/api/usuarios/:id/posts', controller.obterPostsDoUsuario);
 }

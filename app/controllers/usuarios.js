@@ -1,28 +1,86 @@
-let usuarios = [{_id: "1", nome: "Bruna", email: "brubsnev@gmail.com", senha: "a231hbuj"}]
+let Usuario = require('../models/usuario.js');
+let Post = require('../models/post.js');
 
 module.exports.listaUsuarios = function(req, res){
-    res.json(usuarios);
+    let promise = Usuario.find();
+    promise.then(
+        function(usuarios){
+            res.status(200).json(usuarios);
+        }
+    ).catch(
+        function(erro){
+            res.status(500).send(erro);
+        }
+    )
 }
 
 module.exports.obterUsuario = function(req, res){
     let id = req.params.id;
-    let usuario = usuarios.find((e)=>(e._id==id));
-    if(usuario){
-        res.json(usuario)
-    }else{
-        res.status(404).send('user not found');
-    }
+    let promise = Usuario.findById(id);
+    promise.then(
+        function(usuario){
+            res.status(200).json(usuario);
+        }
+    ).catch(
+        function(erro){
+            res.status(404).send(erro);
+        }
+    )
 };
 
 module.exports.inserirUsuario = function(req, res){
-    usuarios.push(req.body);
-    res.status(200).send(req.body);
+    let promise = Usuario.create(req.body);
+    promise.then(
+        function(usuario){
+            res.status(201).json(usuario);
+        }
+    ).catch(
+        function(erro){
+            res.status(500).json(erro);
+        }
+    )
 }
 
 module.exports.updateUsuario = function(req, res){
-    res.send('');
+    let id = req.params.id;
+    let promise = Usuario.findByIdAndUpdate(id, {
+        'nome': req.body.nome
+    });
+    promise.then(
+        function(usuario){
+            res.status(200).json(usuario);
+        }
+    ).catch(
+        function(erro){
+            res.status(500).json(erro);
+        }
+    )
 }
 
 module.exports.deleteUsuario = function(req, res){
-    res.send('');
+    let id = req.params.id;
+    let promise = Usuario.remove({'_id':id});
+    promise.then(
+        function(usuario){
+            res.status(200).send("Usuário removido");
+        }
+    ).catch(
+        function(erro){
+            res.status(500).json(erro);
+        }
+    )
+}
+
+module.exports.obterPostsDoUsuario = function(req, res){
+    let id = req.params.id;
+    let promise = Post.find({'usuario': id});
+    promise.then(
+        function(posts){
+            res.status(200).json(posts);
+        }
+    ).catch(
+        function(erro){
+            res.status(500).send(erro);
+        }
+    )
 }
