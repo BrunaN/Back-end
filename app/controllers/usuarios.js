@@ -52,7 +52,7 @@ module.exports.inserirUsuario = function(req, res){
         }
     ).catch(
         function(erro){
-            res.status(500).json("Não existe");
+            res.status(500).json(erro);
         }
     )
 }

@@ -54,10 +54,10 @@ module.exports.updatePost = function(req, res){
     let id = req.params.id;
 
     let post = new Post({
-        _id: req._id,
         texto: req.body.texto,
         likes: req.body.likes,
-        usuario: req.body.usuario
+        usuario: req.body.usuario,
+        _id: id
     });
 
     let payload = jwt.decode(req.query.token);
