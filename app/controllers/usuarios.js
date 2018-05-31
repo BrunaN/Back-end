@@ -5,7 +5,7 @@ let Usuario = require('../models/usuario.js');
 let Post = require('../models/post.js');
 
 module.exports.listaUsuarios = function(req, res){
-    let promise = Usuario.find().exec();
+    let promise = Usuario.find({}, {'senha': 0}).exec();
     promise.then(
         function(usuarios){
             res.status(200).json(usuarios);
