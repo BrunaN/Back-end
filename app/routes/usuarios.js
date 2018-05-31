@@ -1,10 +1,13 @@
-let controller = require("../controllers/usuarios");
+let controller = require('../controllers/usuarios');
+let auth = require('../controllers/auth')
 
 module.exports = function(app){
+    app.post('/api/usuarios/signin', auth.signin);
+    app.post('/api/usuarios', controller.inserirUsuario);
+    app.use('/api/usuarios', auth.verificarToken);
     app.get('/api/usuarios', controller.listaUsuarios);
     app.get('/api/usuarios/:id', controller.obterUsuario);
-    app.post('/api/usuarios', controller.inserirUsuario);
-    app.put('/api/usuarios/:id', controller.updateUsuario);
-    app.delete('/api/usuarios/:id', controller.deleteUsuario);
+    app.put('/api/usuarios', controller.updateUsuario);
+    app.delete('/api/usuarios', controller.deleteUsuario);
     app.get('/api/usuarios/:id/posts', controller.obterPostsDoUsuario);
 }

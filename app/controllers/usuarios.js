@@ -1,8 +1,11 @@
+let bcrypt = require('bcrypt');
+let jwt = require('jsonwebtoken');
+
 let Usuario = require('../models/usuario.js');
 let Post = require('../models/post.js');
 
 module.exports.listaUsuarios = function(req, res){
-    let promise = Usuario.find();
+    let promise = Usuario.find().exec();
     promise.then(
         function(usuarios){
             res.status(200).json(usuarios);
@@ -16,10 +19,14 @@ module.exports.listaUsuarios = function(req, res){
 
 module.exports.obterUsuario = function(req, res){
     let id = req.params.id;
-    let promise = Usuario.findById(id);
+    let promise = Usuario.findById(id).exec();
     promise.then(
         function(usuario){
-            res.status(200).json(usuario);
+            res.status(200).json({
+                id: usuario._id,
+                nome: usuario.nome,
+                email: usuario.email
+            });
         }
     ).catch(
         function(erro){
@@ -29,26 +36,45 @@ module.exports.obterUsuario = function(req, res){
 };
 
 module.exports.inserirUsuario = function(req, res){
-    let promise = Usuario.create(req.body);
+    let usuario = new Usuario({
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: bcrypt.hashSync(req.body.senha, 10)
+    });
+    let promise = Usuario.create(usuario);
     promise.then(
         function(usuario){
-            res.status(201).json(usuario);
+            res.status(201).json({
+                id: usuario._id,
+                nome: usuario.nome,
+                email: usuario.email
+            });
         }
     ).catch(
         function(erro){
-            res.status(500).json(erro);
+            res.status(500).json("Não existe");
         }
     )
 }
 
 module.exports.updateUsuario = function(req, res){
-    let id = req.params.id;
-    let promise = Usuario.findByIdAndUpdate(id, {
-        'nome': req.body.nome
+    let payload = jwt.decode(req.query.token);
+
+    let usuario = new Usuario({
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: req.body.senha,
+        _id: payload.id
     });
+
+    let promise = Usuario.findByIdAndUpdate(payload.id, req.body);
     promise.then(
         function(usuario){
-            res.status(200).json(usuario);
+            res.status(200).json({
+                id: usuario._id,
+                nome: usuario.nome,
+                email: usuario.email
+            });
         }
     ).catch(
         function(erro){
@@ -58,8 +84,9 @@ module.exports.updateUsuario = function(req, res){
 }
 
 module.exports.deleteUsuario = function(req, res){
-    let id = req.params.id;
-    let promise = Usuario.remove({'_id':id});
+    let payload = jwt.decode(req.query.token);
+
+    let promise = Usuario.remove({'_id':payload.id});
     promise.then(
         function(usuario){
             res.status(200).send("Usuário removido");
