@@ -6,10 +6,10 @@ module.exports = function(){
             type: String,
             required: true
         },
-        likes:[{
-            type: mongoose.Schema.ObjectId,
+        likes:{
+            type: [mongoose.Schema.ObjectId],
             ref: 'Usuario'
-        }],
+        },
         usuario:{
             type: mongoose.Schema.ObjectId,
             ref: 'Usuario'

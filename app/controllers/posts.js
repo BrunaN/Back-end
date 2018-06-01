@@ -101,7 +101,8 @@ module.exports.deletePost = function(req, res){
 
 module.exports.usuarioPost = function(req, res){
     let id = req.params.id;
-    let promise = Post.findById(id).populate('usuario', 'senha');
+    let promise = Post.findById(id)
+                        .populate('usuario', '-senha').exec();
     promise.then(
         function(post){
             res.json(post.usuario);
