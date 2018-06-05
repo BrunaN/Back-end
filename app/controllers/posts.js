@@ -17,6 +17,7 @@ module.exports.listaPosts = function(req, res){
 
 module.exports.obterPost = function(req, res){
     let id = req.params.id;
+    
     let promise = Post.findById(id);
     promise.then(
         function(post){
@@ -53,7 +54,7 @@ module.exports.inserirPost = function(req, res){
 module.exports.updatePost = function(req, res){
     let id = req.params.id;
 
-    let post = new Post({
+    let post_updated = new Post({
         texto: req.body.texto,
         likes: req.body.likes,
         usuario: req.body.usuario,
@@ -62,14 +63,18 @@ module.exports.updatePost = function(req, res){
 
     let payload = jwt.decode(req.query.token);
 
-    let promise = Post.findByIdAndUpdate(id, post);
+    let promise = Post.findById(id);
     promise.then(
         function(post){
             if(req.body.usuario == payload.id){
-                res.status(200).json(post);
+                let promise1 = Post.findByIdAndUpdate(post.id, post_updated).then(
+                    function(post){
+                        res.status(200).json("Post updated");
+                    }
+                )
             }else{
-                res.status(500).send("Usuário inválido");
-            }
+                res.status(500).json("user invalid");    
+            };
         }
     ).catch(
         function(erro){
@@ -83,24 +88,29 @@ module.exports.deletePost = function(req, res){
 
     let payload = jwt.decode(req.query.token);
 
-    let promise = Post.remove({'_id': id});
+    let promise = Post.findById(id).exec();
     promise.then(
         function(post){
-            if(req.body.usuario == payload.id){
-                res.status(200).json("O post foi removido");
+            if(post.user == payload._id){
+                let promise2 = Post.remove({'_id': id}).exec().then(
+                    function(post_remove){
+                        res.status(200).json("Post removed");
+                    }
+                );
             }else{
-                res.status(500).send("Usuário inválido");
-            }
+                res.status(500).json("user invalid");
+            }        
         }
     ).catch(
-        function(erro){
-            res.status(500).send(erro);
+        function(error){
+            res.status(500).json("user invalid 2");
         }
     )
 }
 
 module.exports.usuarioPost = function(req, res){
     let id = req.params.id;
+
     let promise = Post.findById(id)
                         .populate('usuario', '-senha').exec();
     promise.then(

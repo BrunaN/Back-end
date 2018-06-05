@@ -19,6 +19,7 @@ module.exports.listaUsuarios = function(req, res){
 
 module.exports.obterUsuario = function(req, res){
     let id = req.params.id;
+
     let promise = Usuario.findById(id).exec();
     promise.then(
         function(usuario){
@@ -41,6 +42,7 @@ module.exports.inserirUsuario = function(req, res){
         email: req.body.email,
         senha: bcrypt.hashSync(req.body.senha, 10)
     });
+
     let promise = Usuario.create(usuario);
     promise.then(
         function(usuario){
@@ -67,7 +69,7 @@ module.exports.updateUsuario = function(req, res){
         _id: payload.id
     });
 
-    let promise = Usuario.findByIdAndUpdate(payload.id, req.body);
+    let promise = Usuario.findByIdAndUpdate(payload.id, usuario);
     promise.then(
         function(usuario){
             res.status(200).json({
@@ -100,6 +102,7 @@ module.exports.deleteUsuario = function(req, res){
 
 module.exports.obterPostsDoUsuario = function(req, res){
     let id = req.params.id;
+    
     let promise = Post.find({'usuario': id});
     promise.then(
         function(posts){
