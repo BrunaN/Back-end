@@ -96,7 +96,7 @@ module.exports.deletePost = function(req, res){
     let promise = Post.findById(id).exec();
     promise.then(
         function(post){
-            if(post.user == payload._id){
+            if(post.user == payload.id){
                 let promise1 = Post.remove({'_id': id}).exec()
                 promise1.then(
                     function(post_remove){
