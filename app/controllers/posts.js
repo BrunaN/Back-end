@@ -17,7 +17,7 @@ module.exports.listaPosts = function(req, res){
 
 module.exports.obterPost = function(req, res){
     let id = req.params.id;
-    
+
     let promise = Post.findById(id);
     promise.then(
         function(post){
@@ -67,9 +67,14 @@ module.exports.updatePost = function(req, res){
     promise.then(
         function(post){
             if(req.body.usuario == payload.id){
-                let promise1 = Post.findByIdAndUpdate(post.id, post_updated).then(
+                let promise1 = Post.findByIdAndUpdate(post.id, post_updated)
+                promise1.then(
                     function(post){
                         res.status(200).json("Post updated");
+                    }
+                ).catch(
+                    function(erro){
+                        res.status(500).send(erro);
                     }
                 )
             }else{
@@ -92,11 +97,16 @@ module.exports.deletePost = function(req, res){
     promise.then(
         function(post){
             if(post.user == payload._id){
-                let promise2 = Post.remove({'_id': id}).exec().then(
+                let promise1 = Post.remove({'_id': id}).exec()
+                promise2.then(
                     function(post_remove){
                         res.status(200).json("Post removed");
                     }
-                );
+                ).catch(
+                    function(erro){
+                        res.status(500).send(erro);
+                    }
+                )
             }else{
                 res.status(500).json("user invalid");
             }        
