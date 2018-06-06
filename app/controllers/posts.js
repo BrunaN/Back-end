@@ -98,7 +98,7 @@ module.exports.deletePost = function(req, res){
         function(post){
             if(post.user == payload._id){
                 let promise1 = Post.remove({'_id': id}).exec()
-                promise2.then(
+                promise1.then(
                     function(post_remove){
                         res.status(200).json("Post removed");
                     }
@@ -109,7 +109,7 @@ module.exports.deletePost = function(req, res){
                 )
             }else{
                 res.status(500).json("user invalid");
-            }        
+            }
         }
     ).catch(
         function(error){
